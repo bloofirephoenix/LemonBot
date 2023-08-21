@@ -14,7 +14,6 @@ public static class ConfigHelpers
             
             return default;
         }
-        
         return JsonSerializer.Deserialize<T>(File.ReadAllText(path));
     }
 

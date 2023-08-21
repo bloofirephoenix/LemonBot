@@ -36,8 +36,8 @@ public class DailyPetRocketRacingMemes
             {
                 nextRun = nextRun.AddDays(1);
             }
-
-            var dif = nextRun - now;
+            
+            var dif = nextRun - DateTime.Now;
             Console.WriteLine($@"Scheduling the next meme for {nextRun} in {dif}");
             await Task.Delay(dif);
             
