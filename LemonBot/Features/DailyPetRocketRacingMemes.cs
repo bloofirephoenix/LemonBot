@@ -68,7 +68,7 @@ public class DailyPetRocketRacingMemes
 
             var movePath = Path.Join("posted", meme.Image);
 
-            if (!Directory.Exists(Path.GetDirectoryName(movePath))!)
+            if (!Directory.Exists(Path.GetDirectoryName(movePath)))
                 Directory.CreateDirectory(Path.GetDirectoryName(movePath)!);
             
             File.Move(meme.Image, Path.Join("posted", meme.Image));
