@@ -7,16 +7,19 @@ namespace LemonBot.Features;
 
 public class DailyPetRocketRacingMemes
 {
-    private DailyMemes? _config;
+    private DailyMemes _config;
     private const string ConfigPath = "memes.json";
     private readonly DiscordSocketClient _client;
 
     public DailyPetRocketRacingMemes(DiscordSocketClient client)
     {
         _client = client;
-        _config = ConfigHelpers.InitializeConfig<DailyMemes>(ConfigPath);
+        _config = new();
+    }
 
-        if (_config == null)
+    public void Start()
+    {
+        if (!ConfigHelpers.InitializeConfig(ConfigPath, out _config))
         {
             Logger.Warning("Memes are disabled. Please fill out memes.json");
             return;
@@ -25,12 +28,12 @@ public class DailyPetRocketRacingMemes
         Task.Run(ScheduleTask);
     }
 
-    private async void ScheduleTask()
+    private async Task ScheduleTask()
     {
         while (true)
         {
             DateTime now = DateTime.Now;
-            var nextRun = now.Date + _config!.Time;
+            var nextRun = now.Date + _config.Time;
 
             if (nextRun < now)
             {
@@ -38,23 +41,21 @@ public class DailyPetRocketRacingMemes
             }
             
             var dif = nextRun - DateTime.Now;
-            Console.WriteLine($@"Scheduling the next meme for {nextRun} in {dif}");
+            Console.WriteLine($@"Scheduling the next meme for {nextRun.ToString(TimeFormat.Format)} in {dif}");
             await Task.Delay(dif);
             
-            _config = ConfigHelpers.InitializeConfig<DailyMemes>("memes.json");
-
-            if (_config == null)
+            if (!ConfigHelpers.InitializeConfig(ConfigPath, out _config))
             {
-                Logger.Error("Could not read memes.json. Daily memes are disabled!");
+                Logger.Error("Failed to read memes.json. Memes are disabled!");
                 return;
             }
             
             _config.Day++;
-            Console.WriteLine($@"Sending daily pet rocket racing meme day {_config.Day}");
+            Console.WriteLine($"Sending daily pet rocket racing meme day {_config.Day}");
 
             if (!_config.Memes.ContainsKey(_config.Day))
             {
-                Logger.Warning($@"No daily meme for day {_config.Day}!");
+                Logger.Warning($"No daily meme for day {_config.Day}!");
                 continue;
             }
             
@@ -63,7 +64,7 @@ public class DailyPetRocketRacingMemes
             // send the meme
             await _client.GetGuild(_config.Guild).GetTextChannel(_config.TextChannel).SendFileAsync(
                 attachment: new FileAttachment(meme.Image),
-                text: $@"{_config.UniversalMessage.Replace("%day%", _config.Day.ToString())} {meme.Message}"
+                text: $"{_config.UniversalMessage.Replace("%day%", _config.Day.ToString())} {meme.Message}"
             );
 
             var movePath = Path.Join("posted", meme.Image);

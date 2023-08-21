@@ -9,9 +9,9 @@ _ = new Logger();
 
 Console.WriteLine("LemonBot");
 
-Config? config = ConfigHelpers.InitializeConfig<Config>("config.json");
 
-if (config == null)
+
+if (!ConfigHelpers.InitializeConfig("config.json", out Config config))
 {
     Console.WriteLine("Please setup config.json");
     return;
@@ -23,7 +23,7 @@ client.Log += Logger.DiscordLog;
 await client.LoginAsync(TokenType.Bot, config.Discord);
 await client.StartAsync();
 
-_ = new DailyPetRocketRacingMemes(client);
+new DailyPetRocketRacingMemes(client).Start();
 
 TerminalManager.Start();
 Console.WriteLine("Exiting");

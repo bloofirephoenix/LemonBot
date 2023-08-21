@@ -4,7 +4,6 @@ public class DailyMemes
 {
     public ulong Guild { get; set; } = 0;
     public ulong TextChannel { get; set; } = 0;
-    
     public TimeSpan Time { get; set; } = TimeSpan.Zero;
     public int Day { get; set; } = 0;
     public Dictionary<int, Meme> Memes { get; set; } = new()

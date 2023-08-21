@@ -34,7 +34,7 @@ public class LogWriter : TextWriter
         _out.Write("[");
 
         Console.ForegroundColor = ConsoleColor.DarkBlue;
-        _out.Write(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        _out.Write(DateTime.Now.ToString(TimeFormat.Format));
         
         Console.ForegroundColor = ConsoleColor.Gray;
         _out.Write("] ");
