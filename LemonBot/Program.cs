@@ -26,6 +26,7 @@ await client.StartAsync();
 client.Ready += async Task () =>
 {
     new DailyPetRocketRacingMemes(client).Start();
+    await new SendMessage(client).Start();
 };
 
 TerminalManager.Start();

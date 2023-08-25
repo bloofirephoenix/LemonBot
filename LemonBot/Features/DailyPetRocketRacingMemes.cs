@@ -22,6 +22,7 @@ public class DailyPetRocketRacingMemes
 
     public void Start()
     {
+        Console.WriteLine("Starting daily pet rocket racing memes");
         if (!ConfigHelpers.InitializeConfig(ConfigPath, out _config))
         {
             Logger.Warning("Memes are disabled. Please fill out memes.json");
@@ -33,7 +34,6 @@ public class DailyPetRocketRacingMemes
 
     private async Task RegisterCommand()
     {
-        Console.WriteLine("Registering Command");
         var command = new SlashCommandBuilder();
         command.WithName("add_meme");
         command.WithDescription("Add a daily meme");
@@ -55,11 +55,13 @@ public class DailyPetRocketRacingMemes
         }
 
         _client.SlashCommandExecuted += SlashCommandHandler;
-        Console.WriteLine("Registered Command");
     }
     
     private async Task SlashCommandHandler(SocketSlashCommand command)
     {
+        if (command.CommandName != "add_meme")
+            return;
+        
         if (command.User.Id != 259483144934260755)
         {
             Logger.Warning($"{command.User.Username} tried to add a meme but is not allowed to");
