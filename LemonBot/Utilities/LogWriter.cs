@@ -30,25 +30,27 @@ public class LogWriter : TextWriter
         if (level == Logger.LogLevel.Debug && !Logger.DebugMessages)
             return;
         
-        Console.ForegroundColor = ConsoleColor.Gray;
-        _out.Write("[");
+        lock (_out) {
+            Console.ForegroundColor = ConsoleColor.Gray;
+            _out.Write("[");
 
-        Console.ForegroundColor = ConsoleColor.DarkBlue;
-        _out.Write(DateTime.Now.ToString(TimeFormat.Format));
-        
-        Console.ForegroundColor = ConsoleColor.Gray;
-        _out.Write("] ");
-        
-        Console.ForegroundColor = ConsoleColor.Gray;
-        _out.Write("[");
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            _out.Write(DateTime.Now.ToString(TimeFormat.Format));
+            
+            Console.ForegroundColor = ConsoleColor.Gray;
+            _out.Write("] ");
+            
+            Console.ForegroundColor = ConsoleColor.Gray;
+            _out.Write("[");
 
-        Console.ForegroundColor = Logger.GetLevelColor(level);
-        _out.Write(level);
-        
-        Console.ForegroundColor = ConsoleColor.Gray;
-        _out.Write("]: ");
-        
-        Console.ResetColor();
-        _out.WriteLine(value);
+            Console.ForegroundColor = Logger.GetLevelColor(level);
+            _out.Write(level);
+            
+            Console.ForegroundColor = ConsoleColor.Gray;
+            _out.Write("]: ");
+            
+            Console.ResetColor();
+            _out.WriteLine(value);
+        }
     }
 }
