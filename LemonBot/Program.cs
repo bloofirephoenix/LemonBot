@@ -23,7 +23,10 @@ client.Log += Logger.DiscordLog;
 await client.LoginAsync(TokenType.Bot, config.Discord);
 await client.StartAsync();
 
-new DailyPetRocketRacingMemes(client).Start();
+client.Ready += async Task () =>
+{
+    new DailyPetRocketRacingMemes(client).Start();
+};
 
 TerminalManager.Start();
 Console.WriteLine("Exiting");

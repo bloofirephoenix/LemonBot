@@ -14,8 +14,7 @@ public static class ConfigHelpers
         if (!File.Exists(path))
         {
             Logger.Debug($"Creating config {path}");
-            var defaultConfig = new T();
-            SaveConfig(defaultConfig, path);
+            SaveConfig(config, path);
             return false;
         }
         var tempConfig = JsonSerializer.Deserialize<T>(File.ReadAllText(path));
