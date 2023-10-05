@@ -17,7 +17,11 @@ if (!ConfigHelpers.InitializeConfig("config.json", out Config config))
     return;
 }
 
-var client = new DiscordSocketClient();
+var client = new DiscordSocketClient(new DiscordSocketConfig()
+{
+    GatewayIntents = GatewayIntents.GuildMessages
+});
+
 client.Log += Logger.DiscordLog;
 
 await client.LoginAsync(TokenType.Bot, config.Discord);
