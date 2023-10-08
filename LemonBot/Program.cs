@@ -3,13 +3,12 @@ using Discord.WebSocket;
 using LemonBot;
 using LemonBot.Configurations;
 using LemonBot.Features;
+using LemonBot.Features.Memes;
 using LemonBot.Utilities;
 
 _ = new Logger();
 
 Console.WriteLine("LemonBot");
-
-
 
 if (!ConfigHelpers.InitializeConfig("config.json", out Config config))
 {
@@ -29,7 +28,7 @@ await client.StartAsync();
 
 client.Ready += async Task () =>
 {
-    new DailyPetRocketRacingMemes(client).Start();
+    new MemeManager(client).Start();
     await new SendMessage(client).Start();
 };
 

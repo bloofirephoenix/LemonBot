@@ -5,16 +5,17 @@ public class DailyMemes
     public ulong Guild { get; set; } = 0;
     public ulong TextChannel { get; set; } = 0;
     
-    public string MemeLocation { get; set; } = "";
-    public string PostedLocation { get; set; } = "";
+    public string MemeLocation { get; set; } = string.Empty;
+    public string PostedLocation { get; set; } = string.Empty;
     public TimeSpan Time { get; set; } = TimeSpan.Zero;
-    public int Day { get; set; } = 0;
-    
+    public int Day { get; set; }
+
     public string UniversalMessage { get; set; } = "day %day% of no pet rocket racing.";
-    public Dictionary<int, string> MemeMessages { get; set; } = new()
+    public List<Meme> Memes { get; set; } = new();
+
+    public class Meme
     {
-        {
-            0, ""
-        }
-    };
+        public string File { get; set; } = string.Empty;
+        public string Message { get; set; } = string.Empty;
+    }
 }

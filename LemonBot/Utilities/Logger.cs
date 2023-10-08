@@ -7,9 +7,9 @@ public class Logger
     public static Logger Instance = null!;
     private static LogWriter _writer = null!;
 #if DEBUG
-    public static bool DebugMessages = true;
+    public static readonly bool DebugMessages = true;
 #else
-    public static bool DebugMessages = false;
+    public static readonly bool DebugMessages = false;
 #endif
     
     public Logger()
@@ -63,7 +63,7 @@ public class Logger
             _ => LogLevel.Info
         };
         
-        Log(level, msg.Message);
+        Log(level, msg.Message + msg.Exception);
         
         return Task.CompletedTask;
     }
