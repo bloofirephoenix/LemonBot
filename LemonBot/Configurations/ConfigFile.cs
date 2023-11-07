@@ -1,4 +1,7 @@
+using System.Text.Json;
 using LemonBot.Utilities;
+using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace LemonBot.Configurations;
 
@@ -11,12 +14,22 @@ public abstract class ConfigFile
         Path = path;
     }
     
-    public void Save()
+    public static void Save<T>(T config) where T : ConfigFile
     {
-        if (!File.Exists(Path))
+        File.WriteAllText(config.Path, JsonSerializer.Serialize(config, new JsonSerializerOptions()
         {
-            Logger.Warning($"{Path} does not exist. Generating config.");
-            
+            WriteIndented = true
+        }));
+    }
+
+    public static void Load<T>(T config) where T : ConfigFile
+    {
+        if (!File.Exists(config.Path))
+        {
+            Logger.Warning($"{config.Path} does not exist. Generating config.");
+            Save(config);
+            return;
         }
+        JsonConvert.PopulateObject(File.ReadAllText(config.Path), config);
     }
 }

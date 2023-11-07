@@ -1,6 +1,6 @@
 namespace LemonBot.Configurations;
 
-public class DailyMemes
+public class DailyMemes : ConfigFile
 {
     public ulong Guild { get; set; } = 0;
     public ulong TextChannel { get; set; } = 0;
@@ -18,4 +18,6 @@ public class DailyMemes
         public string File { get; set; } = string.Empty;
         public string Message { get; set; } = string.Empty;
     }
+
+    public DailyMemes() : base("memes.json") {}
 }
