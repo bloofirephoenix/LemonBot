@@ -11,7 +11,10 @@ _ = new Logger();
 
 Console.WriteLine("LemonBot");
 
-if (!ConfigHelpers.InitializeConfig("config.json", out Config config))
+Config config = new();
+ConfigFile.Load(config);
+
+if (!ConfigFile.Load(config))
 {
     Console.WriteLine("Please setup config.json");
     return;
