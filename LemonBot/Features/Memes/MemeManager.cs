@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Discord.WebSocket;
 using LemonBot.Configurations;
 using LemonBot.Utilities;
@@ -46,23 +47,30 @@ public class MemeManager
                 }
             
                 var dif = nextRun - DateTime.Now;
-                Console.WriteLine($@"Scheduling the next meme for {nextRun.ToString(TimeFormat.Format)} in {dif}");
+                Console.WriteLine($"Scheduling the next meme for {nextRun.ToString(TimeFormat.Format)} in {dif}");
                 await Task.Delay(dif);
                 
                 // send the meme
                 var meme = _memes.Memes[0];
                 _memes.Memes.Remove(meme);
-
-                _memes.Day++;
-
-                await _client.GetGuild(_memes.Guild).GetTextChannel(_memes.TextChannel).SendFileAsync(meme.File, text: meme.Message);
+                await _client.GetGuild(_memes.Guild).GetTextChannel(_memes.TextChannel).SendFileAsync(meme.File, 
+                    text: $"{_memes.UniversalMessage.Replace("%day%", _memes.Day.ToString())} {meme.Message}");
                 
                 // move the meme to posted folder
-                File.Move(meme.File, $"posted/{_memes.Day}.png");
+                try
+                {
+                    Directory.CreateDirectory(_memes.PostedLocation);
+                    File.Move(meme.File, $"{_memes.PostedLocation}/{_memes.Day}{Path.GetExtension(meme.File)}");
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(ex.ToString());
+                }
+
+                _memes.Day++;
+                ConfigFile.Save(_memes);
             }
         });
-        Logger.Info("MemeManager Stopped");
-        Started = false;
     }
 
     public void AddMeme(DailyMemes.Meme meme, bool skipLine)
@@ -73,5 +81,10 @@ public class MemeManager
             _memes.Memes.Add(meme);
         
         ConfigFile.Save(_memes);
+    }
+
+    public string GetNewMemeFileLocation(string extension)
+    {
+        return $"{_memes.MemeLocation}/{Guid.NewGuid()}.{extension}";
     }
 }

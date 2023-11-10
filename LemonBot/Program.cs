@@ -5,6 +5,7 @@ using LemonBot.Configurations;
 using LemonBot.Features;
 using LemonBot.Features.Memes;
 using LemonBot.Utilities;
+using System;
 
 _ = new Logger();
 
@@ -18,7 +19,7 @@ if (!ConfigHelpers.InitializeConfig("config.json", out Config config))
 
 var client = new DiscordSocketClient(new DiscordSocketConfig()
 {
-    GatewayIntents = GatewayIntents.GuildMessages
+    GatewayIntents = GatewayIntents.GuildMessages | GatewayIntents.Guilds
 });
 
 client.Log += Logger.DiscordLog;
@@ -28,6 +29,7 @@ await client.StartAsync();
 
 client.Ready += async Task () =>
 {
+    Console.WriteLine("Bot Ready");
     new MemeManager(client).Start();
     await new SendMessage(client).Start();
 };
