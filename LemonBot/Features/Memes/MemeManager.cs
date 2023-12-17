@@ -49,23 +49,31 @@ public class MemeManager
                 var dif = nextRun - DateTime.Now;
                 Console.WriteLine($"Scheduling the next meme for {nextRun.ToString(TimeFormat.Format)} in {dif}");
                 await Task.Delay(dif);
-                
+
+                var dm = await _client.GetUser(259483144934260755).CreateDMChannelAsync();
                 // send the meme
-                var meme = _memes.Memes[0];
-                _memes.Memes.Remove(meme);
-                await _client.GetGuild(_memes.Guild).GetTextChannel(_memes.TextChannel).SendFileAsync(meme.File, 
-                    text: $"{_memes.UniversalMessage.Replace("%day%", _memes.Day.ToString())} {meme.Message}");
+                if (_memes.Memes.Count > 0)
+                {
+                    var meme = _memes.Memes[0];
+                    _memes.Memes.Remove(meme);
+                    await _client.GetGuild(_memes.Guild).GetTextChannel(_memes.TextChannel).SendFileAsync(meme.File,
+                        text: $"{_memes.UniversalMessage.Replace("%day%", _memes.Day.ToString())} {meme.Message}");
+
+                    // move the meme to posted folder
+                    try
+                    {
+                        Directory.CreateDirectory(_memes.PostedLocation);
+                        File.Move(meme.File, $"{_memes.PostedLocation}/{_memes.Day}{Path.GetExtension(meme.File)}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error(ex.ToString());
+                        await dm.SendMessageAsync($"``An error occurred moving the meme #{_memes.Day} ({meme.File})``");
+                    }
+                }
                 
-                // move the meme to posted folder
-                try
-                {
-                    Directory.CreateDirectory(_memes.PostedLocation);
-                    File.Move(meme.File, $"{_memes.PostedLocation}/{_memes.Day}{Path.GetExtension(meme.File)}");
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error(ex.ToString());
-                }
+                // send the number of memes left to me in a dm
+                await dm.SendMessageAsync($"``{_memes.Memes.Count}`` memes left in the queue.");
 
                 _memes.Day++;
                 ConfigFile.Save(_memes);
