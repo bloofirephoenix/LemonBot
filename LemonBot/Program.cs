@@ -15,13 +15,13 @@ ConfigFile.Load(config);
 
 if (!ConfigFile.Load(config))
 {
-	Console.WriteLine("Please setup config.json");
-	return;
+    Console.WriteLine("Please setup config.json");
+    return;
 }
 
 var client = new DiscordSocketClient(new DiscordSocketConfig()
 {
-	GatewayIntents = GatewayIntents.GuildMessages | GatewayIntents.Guilds
+    GatewayIntents = GatewayIntents.GuildMessages | GatewayIntents.Guilds
 });
 
 client.Log += Logger.DiscordLog;
@@ -34,9 +34,9 @@ var sendMessage = new SendMessage(client);
 
 client.Ready += async Task () =>
 {
-	Console.WriteLine("Bot Ready");
-	memeManager.Start();
-	await sendMessage.Start();
+    Console.WriteLine("Bot Ready");
+    memeManager.Start();
+    await sendMessage.Start();
 };
 
 TerminalManager.Start();
