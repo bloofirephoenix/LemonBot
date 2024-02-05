@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using Discord;
 using Discord.WebSocket;
 using LemonBot.Configurations;
 using LemonBot.Utilities;
@@ -49,8 +50,22 @@ public class MemeManager
 				Console.WriteLine($"Scheduling the next meme for {nextRun.ToString(TimeFormat.Format)} in {dif}");
 				await Task.Delay(dif);
 				Console.WriteLine("It's meme time");
-
-				var dm = await _client.GetUser(259483144934260755).CreateDMChannelAsync();
+				
+				IDMChannel? dm = null;
+				
+				try
+				{
+					var user = await _client.GetUserAsync(259483144934260755);
+					if (user != null)
+						dm = await user.CreateDMChannelAsync();
+					else
+						Logger.Error("dm user is null");
+				} 
+				catch (Exception e)
+				{
+					Logger.Error("failed to create dm channel");
+					Logger.Error(e.ToString());
+				}
 
 				if (dm == null) 
 					Logger.Error("DM channel is null");
@@ -58,6 +73,7 @@ public class MemeManager
 				// send the meme
 				if (_memes.Memes.Count > 0)
 				{
+					Console.WriteLine("Fetching the meme");
 					var meme = _memes.Memes[0];
 					_memes.Memes.Remove(meme);
 
