@@ -9,7 +9,7 @@ public class DailyMemes : ConfigFile
     public string PostedLocation { get; set; } = string.Empty;
     public TimeSpan Time { get; set; } = TimeSpan.Zero;
     public int Day { get; set; }
-
+    public DateTime StartDay { get; set; }
     public string UniversalMessage { get; set; } = "day %day% of no pet rocket racing.";
     public List<Meme> Memes { get; set; } = new();
 

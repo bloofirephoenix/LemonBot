@@ -38,12 +38,39 @@ public class MemeManager
             while (true)
             {
                 // schedule the next meme
+                DateTime nextRun;
                 DateTime now = DateTime.Now;
-                var nextRun = now.Date + _memes.Time;
 
-                if (nextRun < now)
+                // are we behind?
+                if (((DateTime.Now - _memes.StartDay).Days + 1) > _memes.Day)
                 {
-                    nextRun = nextRun.AddDays(1);
+                    Console.WriteLine("We are behind");
+                    // yes
+                    nextRun = now.Date + _memes.Time;
+                    if (nextRun < now)
+                    {
+                        nextRun = nextRun.AddDays(1);
+                    }
+
+                    if (nextRun - DateTime.Now > TimeSpan.FromHours(12))
+                    {
+                        nextRun = now.Date + _memes.Time + TimeSpan.FromHours(12);
+
+                        if (nextRun < now)
+                        {
+                            nextRun = nextRun.AddDays(1);
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("We are on time");
+                    // no
+                    nextRun = now.Date + _memes.Time;
+                    if (nextRun < now)
+                    {
+                        nextRun = nextRun.AddDays(1);
+                    }
                 }
             
                 var dif = nextRun - DateTime.Now;
@@ -120,20 +147,24 @@ public class MemeManager
                                     $"``An error occurred moving the meme #{_memes.Day} ({meme.File})``");
                         }
                     }
-                }
 
-                try
-                {
-                    Console.WriteLine("Incrementing Day");
-                    _memes.Day++;
-                    ConfigFile.Save(_memes);
-                    Console.WriteLine("Day incremented!");
+                    try
+                    {
+                        Console.WriteLine("Incrementing Day");
+                        _memes.Day++;
+                        ConfigFile.Save(_memes);
+                        Console.WriteLine("Day incremented!");
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error(ex.ToString());
+                        if (dm != null)
+                            await dm.SendMessageAsync($"``Error incrementing day``");
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    Logger.Error(ex.ToString());
-                    if (dm != null)
-                        await dm.SendMessageAsync($"``Error incrementing day``");
+                    Console.WriteLine("No meme");
                 }
             }
         });
