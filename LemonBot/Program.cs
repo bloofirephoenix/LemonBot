@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Discord.Rest;
 using Discord.WebSocket;
 using LemonBot;
 using LemonBot.Configurations;
@@ -30,13 +31,11 @@ await client.LoginAsync(TokenType.Bot, config.Discord);
 await client.StartAsync();
 
 var memeManager = new MemeManager(client);
-var sendMessage = new SendMessage(client);
 
-client.Ready += async Task () =>
-{
+client.Ready += () => {
     Console.WriteLine("Bot Ready");
     memeManager.Start();
-    await sendMessage.Start();
+    return Task.CompletedTask;
 };
 
 TerminalManager.Start();

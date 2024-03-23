@@ -20,7 +20,7 @@ public class MemeCommand
         _memes = memes;
     }
 
-    public async Task Register()
+    public async Task Register(ulong guildId)
     {
         var command = new SlashCommandBuilder();
         command.WithName("add_meme");
@@ -29,9 +29,16 @@ public class MemeCommand
         command.AddOption("message", ApplicationCommandOptionType.String, "the message", false);
         command.AddOption("next_meme", ApplicationCommandOptionType.Boolean, "if the meme should be the next one to post", false);
 
+        var guild = _client.GetGuild(guildId);
+        if (guild == null)
+        {
+            Logger.Error("hey stinky the meme command server couldnt be found");
+            return;
+        }
+
         try
         {
-            await _client.CreateGlobalApplicationCommandAsync(command.Build());
+            await guild.CreateApplicationCommandAsync(command.Build());
         }
         catch (HttpException e)
         {

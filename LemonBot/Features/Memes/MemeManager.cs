@@ -1,9 +1,7 @@
-using System.Runtime.InteropServices;
 using Discord;
 using Discord.WebSocket;
 using LemonBot.Configurations;
 using LemonBot.Utilities;
-using static LemonBot.Configurations.DailyMemes;
 
 namespace LemonBot.Features.Memes;
 
@@ -24,6 +22,17 @@ public class MemeManager
 
     public void Start()
     {
+        // check for missing memes
+        var files = Directory.GetFiles(_memes.PostedLocation).Select(name => Path.GetFileNameWithoutExtension(name)).ToHashSet();
+
+        for (int i = 1; i < _memes.Day; i++)
+        {
+            if (!files.Contains(i.ToString()))
+            {
+                Logger.Warning($"Missing meme {i}");
+            }
+        }
+
         if (_task != null && !_task.IsCompleted)
         {
             Logger.Warning("Tried to start the MemeManager but it is already running");
@@ -33,7 +42,7 @@ public class MemeManager
         _task = Task.Run(async () =>
         {
             Console.WriteLine("Starting daily memes");
-            await _command.Register();
+            await _command.Register(_memes.Guild);
 
             while (true)
             {
@@ -42,9 +51,10 @@ public class MemeManager
                 DateTime now = DateTime.Now;
 
                 // are we behind?
-                if (((DateTime.Now - _memes.StartDay).Days + 1) > _memes.Day)
+                var dayDif = (DateTime.Now - _memes.StartDay).Days + 1;
+                if (dayDif > _memes.Day)
                 {
-                    Console.WriteLine("We are behind");
+                    Console.WriteLine($"We are behind {dayDif - _memes.Day} days");
                     // yes
                     nextRun = now.Date + _memes.Time;
                     if (nextRun < now)
