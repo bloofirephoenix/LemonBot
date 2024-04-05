@@ -56,20 +56,26 @@ public class MemeManager
                 {
                     Console.WriteLine($"We are behind {dayDif - _memes.Day} days");
                     // yes
-                    nextRun = now.Date + _memes.Time;
-                    if (nextRun < now)
+                    var mainTime = now.Date + _memes.Time;
+                    if (mainTime < now)
                     {
-                        nextRun = nextRun.AddDays(1);
+                        mainTime = mainTime.AddDays(1);
                     }
 
-                    if (nextRun - DateTime.Now > TimeSpan.FromHours(12))
+                    var altTime = now.Date + _memes.Time + TimeSpan.FromHours(12);
+                    altTime = new DateTime(now.Year, now.Month, now.Day, altTime.Hour, altTime.Minute, altTime.Second);
+                    if (altTime < now)
                     {
-                        nextRun = now.Date + _memes.Time + TimeSpan.FromHours(12);
+                        altTime = altTime.AddDays(1);
+                    }
 
-                        if (nextRun < now)
-                        {
-                            nextRun = nextRun.AddDays(1);
-                        }
+                    if (mainTime < altTime)
+                    {
+                        nextRun = mainTime;
+                    } 
+                    else
+                    {
+                        nextRun = altTime;
                     }
                 }
                 else
