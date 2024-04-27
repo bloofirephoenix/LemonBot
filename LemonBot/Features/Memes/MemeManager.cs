@@ -52,9 +52,9 @@ public class MemeManager
 
                 // are we behind?
                 var dayDif = (DateTime.Now - _memes.StartDay).Days + 1;
-                if (dayDif > _memes.Day)
+                if (dayDif > _memes.Day - 1)
                 {
-                    Console.WriteLine($"We are behind {dayDif - _memes.Day} days");
+                    Console.WriteLine($"We are behind {dayDif - _memes.Day + 1} days");
                     // yes
                     var mainTime = now.Date + _memes.Time;
                     if (mainTime < now)

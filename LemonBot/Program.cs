@@ -35,6 +35,7 @@ var memeManager = new MemeManager(client);
 client.Ready += () => {
     Console.WriteLine("Bot Ready");
     memeManager.Start();
+    new Squak(client).Start();
     return Task.CompletedTask;
 };
 
