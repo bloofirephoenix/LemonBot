@@ -47,7 +47,8 @@ public class Squawk(DiscordSocketClient client)
         if (mentioned)
         {
             Console.WriteLine("Squawking because I was mentioned >:(");
-            await SendSquawk(message.Channel, reference);
+            var sayFuckYou = Random.Shared.NextDouble() < Config.Instance!.Squawking.FuckYouResponseChance;
+            await SendSquawk(message.Channel, reference, sayFuckYou);
         }
         else if (Config.Instance!.Squawking.RandomSquawkChannels.Contains(message.Channel.Id) && Random.Shared.NextDouble() < Config.Instance.Squawking.RandomResponseChance)
         {
