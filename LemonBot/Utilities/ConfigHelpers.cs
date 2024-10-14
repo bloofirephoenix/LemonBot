@@ -25,6 +25,9 @@ public static class ConfigHelpers
         return true;
     }
 
+    /// <summary>
+    /// Saves the config to the specified file
+    /// </summary>
     public static void SaveConfig<T>(T config, string path)
     {
         var options = new JsonSerializerOptions

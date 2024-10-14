@@ -1,23 +1,25 @@
 ﻿using Discord;
-using Discord.Rest;
 using Discord.WebSocket;
 using LemonBot;
-using LemonBot.Configurations;
 using LemonBot.Features;
-using LemonBot.Features.Memes;
 using LemonBot.Utilities;
 
 _ = new Logger();
 
 Console.WriteLine("LemonBot");
 
-Config config = new();
-ConfigFile.Load(config);
-
-if (!ConfigFile.Load(config))
+if (!ConfigHelpers.InitializeConfig("config.json", out Config.Instance))
 {
-    Console.WriteLine("Please setup config.json");
+    Logger.Warning("config does not exist");
+    Console.WriteLine("plz setup config.json plz i beg of you");
     return;
+}
+
+if (Config.Instance!.Version != Config.CurrentVersion) {
+    Logger.Warning("config is out of date! :(");
+    Logger.Warning("dont worry im updating config.json");
+    Config.Instance.Version = Config.CurrentVersion;
+    ConfigHelpers.SaveConfig(Config.Instance, "config.json");
 }
 
 var client = new DiscordSocketClient(new DiscordSocketConfig()
@@ -27,18 +29,17 @@ var client = new DiscordSocketClient(new DiscordSocketConfig()
 
 client.Log += Logger.DiscordLog;
 
-await client.LoginAsync(TokenType.Bot, config.Discord);
+await client.LoginAsync(TokenType.Bot, Config.Instance.DiscordApiKey);
 await client.StartAsync();
 
-var memeManager = new MemeManager(client);
-
 client.Ready += () => {
-    Console.WriteLine("Bot Ready");
-    memeManager.Start();
-    new Squak(client).Start();
+    Console.WriteLine("Bot Ready :O");
+
+    // enable features
+    if (Config.Instance.Squawking.Enabled)
+        new Squawk(client).Start();
+
     return Task.CompletedTask;
 };
 
-TerminalManager.Start();
-Console.WriteLine("Exiting");
-await client.StopAsync();
+await TaskManager.Run();
