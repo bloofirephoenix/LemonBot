@@ -1,6 +1,6 @@
 using System;
 
-namespace LemonBot;
+namespace LemonBot.Models;
 
 public class Config
 {

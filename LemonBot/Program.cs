@@ -2,11 +2,13 @@
 using Discord.WebSocket;
 using LemonBot;
 using LemonBot.Features;
+using LemonBot.Models;
 using LemonBot.Utilities;
 
 _ = new Logger();
 
-Console.WriteLine("LemonBot");
+Console.WriteLine("LemonBot version 2.0.1");
+Console.WriteLine("Made with love by bloofirephoenix");
 
 if (!ConfigHelpers.InitializeConfig("config.json", out Config.Instance))
 {

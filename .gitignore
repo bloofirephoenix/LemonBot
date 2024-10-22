@@ -402,3 +402,4 @@ FodyWeavers.xsd
 
 .DS_STORE
 LemonBot/config.json
+LemonBot/data.json
