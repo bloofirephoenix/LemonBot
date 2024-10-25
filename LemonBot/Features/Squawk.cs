@@ -1,4 +1,3 @@
-using System;
 using Discord;
 using Discord.WebSocket;
 using LemonBot.Models;
@@ -8,15 +7,15 @@ namespace LemonBot.Features;
 
 public class Squawk(DiscordSocketClient client)
 {
-    private static bool Started = false;
+    private static bool _started = false;
     public void Start()
     {
-        if (Started)
+        if (_started)
         {
             Logger.Warning("Attempted to start squawk after already starting squawk!!!!");
             return;
         }
-        Started = true;
+        _started = true;
         Console.WriteLine("enabling squawk.");
         Console.WriteLine("warming up the vocal chords as we speak");
         client.MessageReceived += OnMessageReceived;
@@ -116,7 +115,8 @@ public class Squawk(DiscordSocketClient client)
             }
 
             var time = TimeSpan.FromMilliseconds(waitTime);
-            Console.WriteLine(string.Format("squawking in {0}:{1}:{2}:{3}.{4}",time.Days.ToString().PadLeft(2, '0'), time.Hours.ToString().PadLeft(2, '0'), time.Minutes.ToString().PadLeft(2, '0'), time.Seconds.ToString().PadLeft(2, '0'), time.Milliseconds.ToString().PadLeft(3, '0')));
+            
+            Console.WriteLine($"squawking in {time:dd':'hh':'mm':'ss'.'FFF}");
             await Task.Delay(time);
 
             if (Config.Instance.Squawking.RandomSquawkChannels.Count <= 0) // man i really hope its not less than 0
