@@ -81,7 +81,7 @@ public class Squawk(DiscordSocketClient client)
             }
         }
 
-        await channel.SendMessageAsync(message, messageReference: reference, allowedMentions: AllowedMentions.None);
+        await channel.SendMessageAsync(message, messageReference: reference, flags: MessageFlags.SuppressNotification, allowedMentions: AllowedMentions.None);
     }
 
     private async void Run()
